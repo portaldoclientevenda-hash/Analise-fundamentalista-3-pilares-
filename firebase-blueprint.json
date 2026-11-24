@@ -1,0 +1,174 @@
+{
+  "entities": {
+    "UserProfilePublic": {
+      "title": "UserProfilePublic",
+      "description": "Public non-PII profile card for workspace display.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "photoURL": { "type": "string", "maxLength": 512 },
+        "defaultOrgId": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "displayName", "createdAt", "updatedAt"]
+    },
+    "UserProfilePrivate": {
+      "title": "UserProfilePrivate",
+      "description": "Isolated PII storage accessible strictly by the account owner or bootstrapped admin.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "email": { "type": "string", "format": "email", "maxLength": 200 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "updatedAt"]
+    },
+    "UserMembershipRef": {
+      "title": "UserMembershipRef",
+      "description": "Index referencing an organization where the user is an active member.",
+      "type": "object",
+      "properties": {
+        "orgId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "orgName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "role": { "type": "string", "enum": ["admin", "analyst", "viewer"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["orgId", "orgName", "role", "createdAt"]
+    },
+    "Organization": {
+      "title": "Organization",
+      "description": "Multi-tenant investment office / organization workspace.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "name": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "cnpj": { "type": "string", "maxLength": 24 },
+        "ownerId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "planTier": { "type": "string", "enum": ["institutional", "pro", "trial"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "name", "ownerId", "planTier", "createdAt", "updatedAt"]
+    },
+    "OrganizationMember": {
+      "title": "OrganizationMember",
+      "description": "Member role binding within an organization.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "orgId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "role": { "type": "string", "enum": ["admin", "analyst", "viewer"] },
+        "displayName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "addedBy": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "orgId", "role", "displayName", "addedBy", "createdAt", "updatedAt"]
+    },
+    "WorkspaceAssetAnalysis": {
+      "title": "WorkspaceAssetAnalysis",
+      "description": "Tenant-isolated valuation overrides, qualitative notes, and custom imported assets.",
+      "type": "object",
+      "properties": {
+        "ticker": { "type": "string", "minLength": 4, "maxLength": 12 },
+        "orgId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "updatedBy": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "status": { "type": "string", "enum": ["rascunho", "revisado", "aprovado"] },
+        "analystNotes": { "type": "string", "maxLength": 20000 },
+        "valuationOverrides": { "type": "object" },
+        "customAssetData": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ticker", "orgId", "updatedBy", "status", "analystNotes", "createdAt", "updatedAt"]
+    },
+    "WeightsPreset": {
+      "title": "WeightsPreset",
+      "description": "Tenant-specific 3-pillar scoring weights configuration.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "orgId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "name": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "updatedBy": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "weights": { "type": "object" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "orgId", "name", "updatedBy", "weights", "createdAt", "updatedAt"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "Immutable append-only audit entry for organizational actions.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "orgId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "userDisplayName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "action": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "targetTicker": { "type": "string", "maxLength": 16 },
+        "details": { "type": "string", "minLength": 2, "maxLength": 1000 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "orgId", "userId", "userDisplayName", "action", "details", "createdAt"]
+    },
+    "PriceAlert": {
+      "title": "PriceAlert",
+      "description": "Tenant-isolated target price alert per ticker.",
+      "type": "object",
+      "properties": {
+        "ticker": { "type": "string", "minLength": 4, "maxLength": 12 },
+        "orgId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "targetPrice": { "type": "number" },
+        "direction": { "type": "string", "enum": ["lte", "gte"] },
+        "enabled": { "type": "boolean" },
+        "note": { "type": "string", "maxLength": 300 },
+        "updatedBy": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["ticker", "orgId", "targetPrice", "direction", "enabled", "updatedBy", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfilePublic" },
+      "description": "Public non-PII user display metadata."
+    },
+    "/users/{userId}/private/{docId}": {
+      "schema": { "$ref": "#/entities/UserProfilePrivate" },
+      "description": "Isolated PII subcollection (email) readable strictly by owner or global admin."
+    },
+    "/users/{userId}/memberships/{orgId}": {
+      "schema": { "$ref": "#/entities/UserMembershipRef" },
+      "description": "Per-user organization membership index."
+    },
+    "/organizations/{orgId}": {
+      "schema": { "$ref": "#/entities/Organization" },
+      "description": "Investment office / tenant workspace metadata."
+    },
+    "/organizations/{orgId}/members/{memberUid}": {
+      "schema": { "$ref": "#/entities/OrganizationMember" },
+      "description": "Tenant RBAC member role assignments (admin, analyst, viewer)."
+    },
+    "/organizations/{orgId}/analyses/{ticker}": {
+      "schema": { "$ref": "#/entities/WorkspaceAssetAnalysis" },
+      "description": "Tenant-isolated valuation overrides, analyst notes, and custom imported asset data."
+    },
+    "/organizations/{orgId}/weights/{presetId}": {
+      "schema": { "$ref": "#/entities/WeightsPreset" },
+      "description": "Tenant-specific 3-pillar scoring weights."
+    },
+    "/organizations/{orgId}/auditLogs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLog" },
+      "description": "Immutable append-only audit trail per organization."
+    },
+    "/organizations/{orgId}/priceAlerts/{ticker}": {
+      "schema": { "$ref": "#/entities/PriceAlert" },
+      "description": "Tenant-isolated target price monitoring alerts by ticker."
+    }
+  }
+}

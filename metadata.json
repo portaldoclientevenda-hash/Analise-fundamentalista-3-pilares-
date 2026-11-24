@@ -1,0 +1,6 @@
+{
+  "name": "Ápice Research — Análise Fundamentalista 3 Pilares",
+  "description": "Plataforma institucional de análise fundamentalista em 3 pilares (Financeiro, Qualitativo e Valuation) para ações e FIIs da B3.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,32 @@
+name: Coletor Fundamentalista B3 & Macro BCB
+
+on:
+  schedule:
+    - cron: '0 22 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  collect-public-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run B3 & BCB Collector
+        run: npx tsx coletor/coletar.ts
+
+      - name: Upload collection artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: b3-macro-collection
+          path: coletor/output/latest_collection.json
+          retention-days: 14

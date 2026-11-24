@@ -1,0 +1,402 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net (Default Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 2. Global Security Primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isBootstrappedAdminEmail() {
+      return isVerifiedUser() && request.auth.token.email == 'jonashenriquedematossousa30@gmail.com';
+    }
+
+    function isGlobalAdmin() {
+      return isBootstrappedAdminEmail() || (
+        isVerifiedUser() && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isOrgMember(orgId) {
+      return isVerifiedUser() &&
+        exists(/databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid));
+    }
+
+    function getOrgMemberRole(orgId) {
+      return get(/databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid)).data.role;
+    }
+
+    function isOrgAdmin(orgId) {
+      return isOrgMember(orgId) && getOrgMemberRole(orgId) == 'admin';
+    }
+
+    function isOrgContributor(orgId) {
+      return isOrgMember(orgId) && getOrgMemberRole(orgId) in ['admin', 'analyst'];
+    }
+
+    // 3. Entity Validation Blueprints
+    function isValidUserPublic(data, userId) {
+      return data.keys().hasAll(['uid', 'displayName', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly(['uid', 'displayName', 'photoURL', 'defaultOrgId', 'createdAt', 'updatedAt']) &&
+        data.uid == userId &&
+        data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 &&
+        data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 120 &&
+        (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 512)) &&
+        (!('defaultOrgId' in data) || (data.defaultOrgId is string && data.defaultOrgId.size() <= 128)) &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidUserPrivate(data, userId) {
+      return data.keys().hasAll(['uid', 'email', 'updatedAt']) &&
+        data.keys().hasOnly(['uid', 'email', 'updatedAt']) &&
+        data.uid == userId &&
+        data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 &&
+        data.email is string && data.email.size() >= 3 && data.email.size() <= 200 &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidUserMembershipRef(data, orgId) {
+      return data.keys().hasAll(['orgId', 'orgName', 'role', 'createdAt']) &&
+        data.keys().hasOnly(['orgId', 'orgName', 'role', 'createdAt']) &&
+        data.orgId == orgId &&
+        data.orgId is string && data.orgId.size() >= 1 && data.orgId.size() <= 128 &&
+        data.orgName is string && data.orgName.size() >= 1 && data.orgName.size() <= 120 &&
+        data.role in ['admin', 'analyst', 'viewer'] &&
+        data.createdAt is timestamp;
+    }
+
+    function isValidOrganization(data, orgId) {
+      return data.keys().hasAll(['id', 'name', 'ownerId', 'planTier', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly(['id', 'name', 'cnpj', 'ownerId', 'planTier', 'createdAt', 'updatedAt']) &&
+        data.id == orgId &&
+        data.id is string && data.id.size() >= 1 && data.id.size() <= 128 &&
+        data.name is string && data.name.size() >= 2 && data.name.size() <= 120 &&
+        (!('cnpj' in data) || (data.cnpj is string && data.cnpj.size() <= 24)) &&
+        data.ownerId is string && data.ownerId.size() >= 1 && data.ownerId.size() <= 128 &&
+        data.planTier in ['institutional', 'pro', 'trial'] &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidOrganizationMember(data, orgId, memberUid) {
+      return data.keys().hasAll(['uid', 'orgId', 'role', 'displayName', 'addedBy', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly(['uid', 'orgId', 'role', 'displayName', 'addedBy', 'createdAt', 'updatedAt']) &&
+        data.uid == memberUid &&
+        data.orgId == orgId &&
+        data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 &&
+        data.orgId is string && data.orgId.size() >= 1 && data.orgId.size() <= 128 &&
+        data.role in ['admin', 'analyst', 'viewer'] &&
+        data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 120 &&
+        data.addedBy is string && data.addedBy.size() >= 1 && data.addedBy.size() <= 128 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidWorkspaceAssetAnalysis(data, orgId, ticker) {
+      return data.keys().hasAll(['ticker', 'orgId', 'updatedBy', 'status', 'analystNotes', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly(['ticker', 'orgId', 'updatedBy', 'status', 'analystNotes', 'valuationOverrides', 'customAssetData', 'createdAt', 'updatedAt']) &&
+        data.ticker == ticker &&
+        data.orgId == orgId &&
+        data.ticker is string && data.ticker.size() >= 4 && data.ticker.size() <= 12 &&
+        data.orgId is string && data.orgId.size() >= 1 && data.orgId.size() <= 128 &&
+        data.updatedBy is string && data.updatedBy.size() >= 1 && data.updatedBy.size() <= 128 &&
+        data.status in ['rascunho', 'revisado', 'aprovado'] &&
+        data.analystNotes is string && data.analystNotes.size() <= 20000 &&
+        (!('valuationOverrides' in data) || (data.valuationOverrides is map && data.valuationOverrides.size() <= 40)) &&
+        (!('customAssetData' in data) || (data.customAssetData is map && data.customAssetData.size() <= 25)) &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidWeightsPreset(data, orgId, presetId) {
+      return data.keys().hasAll(['id', 'orgId', 'name', 'updatedBy', 'weights', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly(['id', 'orgId', 'name', 'updatedBy', 'weights', 'createdAt', 'updatedAt']) &&
+        data.id == presetId &&
+        data.orgId == orgId &&
+        data.name is string && data.name.size() >= 2 && data.name.size() <= 80 &&
+        data.updatedBy is string && data.updatedBy.size() >= 1 && data.updatedBy.size() <= 128 &&
+        data.weights is map && data.weights.size() <= 10 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    function isValidAuditLog(data, orgId, logId) {
+      return data.keys().hasAll(['id', 'orgId', 'userId', 'userDisplayName', 'action', 'details', 'createdAt']) &&
+        data.keys().hasOnly(['id', 'orgId', 'userId', 'userDisplayName', 'action', 'targetTicker', 'details', 'createdAt']) &&
+        data.id == logId &&
+        data.orgId == orgId &&
+        data.userId == request.auth.uid &&
+        data.userDisplayName is string && data.userDisplayName.size() >= 1 && data.userDisplayName.size() <= 120 &&
+        data.action is string && data.action.size() >= 2 && data.action.size() <= 80 &&
+        (!('targetTicker' in data) || (data.targetTicker is string && data.targetTicker.size() <= 16)) &&
+        data.details is string && data.details.size() >= 2 && data.details.size() <= 1000 &&
+        data.createdAt == request.time;
+    }
+
+    function isValidPriceAlert(data, orgId, ticker) {
+      return data.keys().hasAll(['ticker', 'orgId', 'targetPrice', 'direction', 'enabled', 'updatedBy', 'createdAt', 'updatedAt']) &&
+        data.keys().hasOnly(['ticker', 'orgId', 'targetPrice', 'direction', 'enabled', 'note', 'updatedBy', 'createdAt', 'updatedAt']) &&
+        data.ticker == ticker &&
+        data.orgId == orgId &&
+        data.ticker is string && data.ticker.size() >= 4 && data.ticker.size() <= 12 &&
+        data.orgId is string && data.orgId.size() >= 1 && data.orgId.size() <= 128 &&
+        data.targetPrice is number && data.targetPrice > 0 && data.targetPrice <= 1000000 &&
+        data.direction in ['lte', 'gte'] &&
+        data.enabled is bool &&
+        (!('note' in data) || (data.note is string && data.note.size() <= 300)) &&
+        data.updatedBy is string && data.updatedBy.size() >= 1 && data.updatedBy.size() <= 128 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    // 4. Connection Health Probe
+    match /test/{docId} {
+      allow get: if docId == 'connection';
+      allow list, write: if false;
+    }
+
+    // 5. Bootstrapped Admin Registry
+    match /admins/{adminUid} {
+      allow get: if isVerifiedUser() && (request.auth.uid == adminUid || isGlobalAdmin());
+      allow list, write: if false;
+    }
+
+    // 6. Users & Split PII Isolation
+    match /users/{userId} {
+      allow get: if isValidId(userId) && isVerifiedUser() && (request.auth.uid == userId || isGlobalAdmin());
+      allow list: if isVerifiedUser() && (resource.data.uid == request.auth.uid || isBootstrappedAdminEmail());
+      allow create: if isValidId(userId) &&
+        isVerifiedUser() &&
+        request.auth.uid == userId &&
+        isValidUserPublic(incoming(), userId) &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+      allow update: if isValidId(userId) &&
+        isVerifiedUser() &&
+        request.auth.uid == userId &&
+        isValidUserPublic(incoming(), userId) &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().uid == existing().uid &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'defaultOrgId', 'updatedAt']);
+      allow delete: if false;
+
+      match /private/{docId} {
+        allow get: if isValidId(userId) && docId == 'info' && isVerifiedUser() && (request.auth.uid == userId || isGlobalAdmin());
+        allow list: if false;
+        allow create, update: if isValidId(userId) &&
+          docId == 'info' &&
+          isVerifiedUser() &&
+          request.auth.uid == userId &&
+          isValidUserPrivate(incoming(), userId) &&
+          incoming().updatedAt == request.time;
+        allow delete: if false;
+      }
+
+      match /memberships/{orgId} {
+        allow get: if isValidId(userId) && isValidId(orgId) && isVerifiedUser() && (request.auth.uid == userId || isGlobalAdmin());
+        allow list: if isVerifiedUser() && (request.auth.uid == userId || isBootstrappedAdminEmail());
+        allow create: if isValidId(userId) &&
+          isValidId(orgId) &&
+          isVerifiedUser() &&
+          (request.auth.uid == userId || isOrgAdmin(orgId) || isGlobalAdmin()) &&
+          isValidUserMembershipRef(incoming(), orgId) &&
+          incoming().createdAt == request.time &&
+          existsAfter(/databases/$(database)/documents/organizations/$(orgId)/members/$(userId));
+        allow update: if isValidId(userId) &&
+          isValidId(orgId) &&
+          isVerifiedUser() &&
+          (isOrgAdmin(orgId) || isGlobalAdmin()) &&
+          isValidUserMembershipRef(incoming(), orgId) &&
+          incoming().createdAt == existing().createdAt &&
+          incoming().orgId == existing().orgId &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['orgName', 'role']);
+        allow delete: if isValidId(userId) && isValidId(orgId) && (isOrgAdmin(orgId) || isGlobalAdmin());
+      }
+    }
+
+    // 7. Multi-Tenant Organizations
+    match /organizations/{orgId} {
+      allow get: if isValidId(orgId) && (isOrgMember(orgId) || isGlobalAdmin());
+      allow list: if isVerifiedUser() && (resource.data.ownerId == request.auth.uid || isBootstrappedAdminEmail());
+      allow create: if isValidId(orgId) &&
+        isVerifiedUser() &&
+        isValidOrganization(incoming(), orgId) &&
+        incoming().ownerId == request.auth.uid &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time &&
+        existsAfter(/databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid));
+      allow update: if isValidId(orgId) &&
+        isVerifiedUser() &&
+        isValidOrganization(incoming(), orgId) &&
+        (isOrgAdmin(orgId) || isGlobalAdmin()) &&
+        incoming().ownerId == existing().ownerId &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().id == existing().id &&
+        incoming().updatedAt == request.time &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['name', 'cnpj', 'planTier', 'updatedAt']);
+      allow delete: if false;
+
+      match /members/{memberUid} {
+        allow get: if isValidId(orgId) && isValidId(memberUid) && (isOrgMember(orgId) || isGlobalAdmin());
+        allow list: if isVerifiedUser() && (resource.data.uid == request.auth.uid || isBootstrappedAdminEmail());
+        allow create: if isValidId(orgId) &&
+          isValidId(memberUid) &&
+          isVerifiedUser() &&
+          isValidOrganizationMember(incoming(), orgId, memberUid) &&
+          incoming().addedBy == request.auth.uid &&
+          incoming().createdAt == request.time &&
+          incoming().updatedAt == request.time &&
+          (
+            isGlobalAdmin() ||
+            isOrgAdmin(orgId) ||
+            (
+              memberUid == request.auth.uid &&
+              incoming().role == 'admin' &&
+              getAfter(/databases/$(database)/documents/organizations/$(orgId)).data.ownerId == request.auth.uid
+            )
+          );
+        allow update: if isValidId(orgId) &&
+          isValidId(memberUid) &&
+          isVerifiedUser() &&
+          isValidOrganizationMember(incoming(), orgId, memberUid) &&
+          (isOrgAdmin(orgId) || isGlobalAdmin()) &&
+          incoming().uid == existing().uid &&
+          incoming().orgId == existing().orgId &&
+          incoming().addedBy == existing().addedBy &&
+          incoming().createdAt == existing().createdAt &&
+          incoming().updatedAt == request.time &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['role', 'displayName', 'updatedAt']);
+        allow delete: if isValidId(orgId) && isValidId(memberUid) && (isOrgAdmin(orgId) || isGlobalAdmin());
+      }
+
+      match /analyses/{ticker} {
+        allow get: if isValidId(orgId) && isValidId(ticker) && (isOrgMember(orgId) || isGlobalAdmin());
+        allow list: if isVerifiedUser() && resource.data.orgId == orgId && (isOrgMember(orgId) || isBootstrappedAdminEmail());
+        allow create: if isValidId(orgId) &&
+          isValidId(ticker) &&
+          isVerifiedUser() &&
+          isValidWorkspaceAssetAnalysis(incoming(), orgId, ticker) &&
+          (isOrgContributor(orgId) || isGlobalAdmin()) &&
+          incoming().updatedBy == request.auth.uid &&
+          incoming().createdAt == request.time &&
+          incoming().updatedAt == request.time;
+        allow update: if isValidId(orgId) &&
+          isValidId(ticker) &&
+          isVerifiedUser() &&
+          isValidWorkspaceAssetAnalysis(incoming(), orgId, ticker) &&
+          incoming().ticker == existing().ticker &&
+          incoming().orgId == existing().orgId &&
+          incoming().createdAt == existing().createdAt &&
+          incoming().updatedBy == request.auth.uid &&
+          incoming().updatedAt == request.time &&
+          (
+            isGlobalAdmin() ||
+            isOrgAdmin(orgId) ||
+            (
+              isOrgContributor(orgId) &&
+              existing().status != 'aprovado' &&
+              incoming().diff(existing()).affectedKeys().hasOnly([
+                'updatedBy',
+                'status',
+                'analystNotes',
+                'valuationOverrides',
+                'customAssetData',
+                'updatedAt'
+              ])
+            )
+          );
+        allow delete: if isValidId(orgId) && isValidId(ticker) && (isOrgAdmin(orgId) || isGlobalAdmin());
+      }
+
+      match /weights/{presetId} {
+        allow get: if isValidId(orgId) && isValidId(presetId) && (isOrgMember(orgId) || isGlobalAdmin());
+        allow list: if isVerifiedUser() && resource.data.orgId == orgId && (isOrgMember(orgId) || isBootstrappedAdminEmail());
+        allow create: if isValidId(orgId) &&
+          isValidId(presetId) &&
+          isVerifiedUser() &&
+          isValidWeightsPreset(incoming(), orgId, presetId) &&
+          (isOrgAdmin(orgId) || isGlobalAdmin()) &&
+          incoming().updatedBy == request.auth.uid &&
+          incoming().createdAt == request.time &&
+          incoming().updatedAt == request.time;
+        allow update: if isValidId(orgId) &&
+          isValidId(presetId) &&
+          isVerifiedUser() &&
+          isValidWeightsPreset(incoming(), orgId, presetId) &&
+          (isOrgAdmin(orgId) || isGlobalAdmin()) &&
+          incoming().id == existing().id &&
+          incoming().orgId == existing().orgId &&
+          incoming().createdAt == existing().createdAt &&
+          incoming().updatedBy == request.auth.uid &&
+          incoming().updatedAt == request.time &&
+          incoming().diff(existing()).affectedKeys().hasOnly(['name', 'updatedBy', 'weights', 'updatedAt']);
+        allow delete: if isValidId(orgId) && isValidId(presetId) && (isOrgAdmin(orgId) || isGlobalAdmin());
+      }
+
+      match /auditLogs/{logId} {
+        allow get: if isValidId(orgId) && isValidId(logId) && (isOrgMember(orgId) || isGlobalAdmin());
+        allow list: if isVerifiedUser() && resource.data.orgId == orgId && (isOrgMember(orgId) || isBootstrappedAdminEmail());
+        allow create: if isValidId(orgId) &&
+          isValidId(logId) &&
+          isVerifiedUser() &&
+          (isOrgMember(orgId) || isGlobalAdmin()) &&
+          isValidAuditLog(incoming(), orgId, logId);
+        allow update, delete: if false;
+      }
+
+      match /priceAlerts/{ticker} {
+        allow get: if isValidId(orgId) && isValidId(ticker) && (isOrgMember(orgId) || isGlobalAdmin());
+        allow list: if isVerifiedUser() && resource.data.orgId == orgId && (isOrgMember(orgId) || isBootstrappedAdminEmail());
+        allow create: if isValidId(orgId) &&
+          isValidId(ticker) &&
+          isVerifiedUser() &&
+          isValidPriceAlert(incoming(), orgId, ticker) &&
+          (isOrgContributor(orgId) || isGlobalAdmin()) &&
+          incoming().updatedBy == request.auth.uid &&
+          incoming().createdAt == request.time &&
+          incoming().updatedAt == request.time;
+        allow update: if isValidId(orgId) &&
+          isValidId(ticker) &&
+          isVerifiedUser() &&
+          isValidPriceAlert(incoming(), orgId, ticker) &&
+          (isOrgContributor(orgId) || isGlobalAdmin()) &&
+          incoming().ticker == existing().ticker &&
+          incoming().orgId == existing().orgId &&
+          incoming().createdAt == existing().createdAt &&
+          incoming().updatedBy == request.auth.uid &&
+          incoming().updatedAt == request.time &&
+          incoming().diff(existing()).affectedKeys().hasOnly([
+            'targetPrice',
+            'direction',
+            'enabled',
+            'note',
+            'updatedBy',
+            'updatedAt'
+          ]);
+        allow delete: if isValidId(orgId) && isValidId(ticker) && (isOrgContributor(orgId) || isGlobalAdmin());
+      }
+    }
+  }
+}

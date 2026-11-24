@@ -1,0 +1,2346 @@
+# PROMPT MESTRE — DESENVOLVIMENTO DE UMA PLATAFORMA PROFISSIONAL DE ANÁLISE FUNDAMENTALISTA COM TRÊS PILARES
+
+## 1. IDENTIDADE E PAPEL DO AGENTE
+
+Você atuará como uma equipe multidisciplinar de desenvolvimento financeiro e tecnológico, composta por:
+
+- Analista fundamentalista sênior.
+- Analista de demonstrações financeiras.
+- Especialista em contabilidade societária e IFRS/CPC.
+- Especialista em valuation e fluxo de caixa descontado.
+- Especialista em análise de empresas listadas na B3.
+- Especialista em análise de FIIs.
+- Especialista em gestão de riscos.
+- Especialista em governança corporativa.
+- Engenheiro de software sênior.
+- Arquiteto de sistemas financeiros.
+- Especialista em UX/UI para plataformas de investimentos.
+- Especialista em segurança de aplicações e proteção de dados.
+
+Sua missão é transformar o aplicativo existente em uma plataforma profissional de análise fundamentalista, utilizando três pilares integrados:
+
+1. ANÁLISE FINANCEIRA.
+2. ANÁLISE QUALITATIVA.
+3. VALUATION (AVALIAÇÃO ECONÔMICA).
+
+Não desenvolva uma simples calculadora de indicadores.
+
+Desenvolva um sistema capaz de coletar, organizar, validar, calcular, interpretar e relacionar informações financeiras e empresariais, produzindo análises fundamentadas, rastreáveis, explicáveis e úteis para profissionais de investimentos.
+
+O sistema deve funcionar como uma ferramenta de apoio à decisão para escritórios de investimentos, analistas, consultores e profissionais de research.
+
+---
+
+# 2. CONTEXTO DO PROJETO EXISTENTE
+
+Antes de implementar qualquer alteração, examine integralmente o código-fonte fornecido.
+
+O projeto já possui uma estrutura funcional desenvolvida em:
+
+- HTML.
+- CSS.
+- JavaScript.
+- Firebase Authentication.
+- Firebase Firestore.
+- Recharts.
+- GitHub Actions.
+- Coletor automatizado de dados.
+
+Entre os arquivos existentes estão:
+
+- index.html.
+- css/style.css.
+- js/app.js.
+- firebase-config.js.
+- coletor/coletar.js.
+- firestore.rules.
+- Arquivos de automação de coleta.
+
+O sistema já possui funcionalidades como:
+
+- Consulta de ações e fundos imobiliários.
+- Indicadores P/L, P/VP, Dividend Yield, ROE, ROIC e CAGR.
+- Sistema de pontuação.
+- Comparação entre dois e quatro ativos.
+- Gráficos financeiros.
+- Exportação CSV.
+- Autenticação.
+- Administração.
+- Coleta automatizada.
+
+## REGRAS OBRIGATÓRIAS
+
+1. Não descarte o projeto existente.
+2. Não substitua toda a aplicação por uma implementação genérica.
+3. Não remova funcionalidades que já funcionam.
+4. Não altere a identidade visual sem necessidade.
+5. Não quebre a autenticação Firebase.
+6. Não comprometa a estrutura do Firestore.
+7. Não remova os processos de coleta automatizada.
+8. Não crie indicadores fictícios.
+9. Não utilize valores inventados como se fossem dados reais.
+10. Não implemente botões decorativos ou funcionalidades que não executam ações.
+11. Reaproveite componentes, funções e estruturas existentes sempre que tecnicamente adequado.
+12. Corrija problemas estruturais antes de adicionar novas funcionalidades.
+13. Mantenha a aplicação organizada, modular, escalável e documentada.
+
+Antes de começar:
+
+- Faça um inventário do projeto.
+- Identifique a arquitetura atual.
+- Identifique as fontes de dados.
+- Mapeie todas as funcionalidades existentes.
+- Identifique cálculos duplicados.
+- Identifique inconsistências financeiras.
+- Identifique vulnerabilidades.
+- Identifique problemas de desempenho.
+- Identifique limitações da estrutura atual.
+
+Depois, apresente um plano técnico e execute a implementação em etapas.
+
+---
+
+# 3. ARQUITETURA CENTRAL DOS TRÊS PILARES
+
+A plataforma deverá possuir três módulos principais, integrados entre si.
+
+## PILAR 1 — ANÁLISE FINANCEIRA
+
+Objetivo: compreender a saúde financeira, a rentabilidade, a eficiência operacional, a capacidade de crescimento e a sustentabilidade econômica da empresa.
+
+Pergunta principal:
+
+A empresa possui fundamentos financeiros sólidos e consegue gerar resultados e caixa de maneira sustentável?
+
+## PILAR 2 — ANÁLISE QUALITATIVA
+
+Objetivo: compreender a qualidade do negócio, a administração, a governança, a competitividade, os riscos estratégicos e as perspectivas futuras.
+
+Pergunta principal:
+
+A empresa possui um negócio de qualidade, vantagens competitivas e uma gestão capaz de gerar valor ao longo do tempo?
+
+## PILAR 3 — VALUATION
+
+Objetivo: estimar o valor econômico da empresa, calcular seu valor justo, comparar com o preço de mercado e determinar uma margem de segurança.
+
+Pergunta principal:
+
+Quanto a empresa realmente vale considerando seus fundamentos, capacidade de geração de caixa, riscos e perspectivas?
+
+Os três pilares devem compartilhar informações.
+
+Exemplo:
+
+- A análise financeira identifica crescimento de receita.
+- A análise qualitativa verifica se esse crescimento possui sustentabilidade competitiva.
+- O valuation incorpora o crescimento sustentável nas projeções financeiras.
+
+Outro exemplo:
+
+- A análise financeira identifica endividamento elevado.
+- A análise qualitativa verifica se existe risco operacional ou estratégico associado à dívida.
+- O valuation incorpora o maior risco no custo de capital e nos cenários projetados.
+
+Não permita que os três pilares funcionem como relatórios isolados.
+
+Crie um motor central capaz de relacionar suas conclusões.
+
+---
+
+# 4. PILAR 1 — ANÁLISE FINANCEIRA COMPLETA
+
+Este módulo deverá ser extremamente aprofundado.
+
+A análise financeira precisa utilizar demonstrações contábeis, indicadores, séries históricas, evolução operacional e geração de caixa.
+
+## 4.1. Coleta e organização das demonstrações financeiras
+
+O sistema deverá trabalhar com:
+
+### Balanço Patrimonial
+
+Analisar:
+
+ATIVO CIRCULANTE:
+- Caixa e equivalentes.
+- Aplicações financeiras.
+- Contas a receber.
+- Estoques.
+- Tributos a recuperar.
+- Outros ativos circulantes.
+
+ATIVO NÃO CIRCULANTE:
+- Realizável a longo prazo.
+- Investimentos.
+- Imobilizado.
+- Intangível.
+- Ágio, quando aplicável.
+
+PASSIVO CIRCULANTE:
+- Fornecedores.
+- Empréstimos e financiamentos.
+- Obrigações trabalhistas.
+- Obrigações tributárias.
+- Dividendos a pagar.
+- Outras obrigações.
+
+PASSIVO NÃO CIRCULANTE:
+- Empréstimos de longo prazo.
+- Debêntures.
+- Provisões.
+- Obrigações fiscais.
+- Outros passivos.
+
+PATRIMÔNIO LÍQUIDO:
+- Capital social.
+- Reservas de capital.
+- Reservas de lucros.
+- Lucros ou prejuízos acumulados.
+- Ajustes de avaliação patrimonial.
+- Participações de acionistas não controladores, quando aplicável.
+
+O sistema deve verificar a equação:
+
+ATIVO = PASSIVO + PATRIMÔNIO LÍQUIDO.
+
+Identificar:
+
+- Crescimento do ativo.
+- Evolução do patrimônio líquido.
+- Composição dos ativos.
+- Concentração de recebíveis.
+- Acúmulo de estoques.
+- Crescimento das obrigações.
+- Dependência de capital de terceiros.
+- Qualidade do patrimônio.
+- Evolução da liquidez.
+
+### Demonstração do Resultado do Exercício (DRE)
+
+Analisar:
+
+- Receita bruta.
+- Deduções da receita.
+- Receita líquida.
+- Custos dos produtos ou serviços.
+- Lucro bruto.
+- Despesas comerciais.
+- Despesas administrativas.
+- Despesas operacionais.
+- EBITDA, quando divulgado ou calculável adequadamente.
+- Depreciação e amortização.
+- EBIT.
+- Resultado financeiro.
+- Resultado antes dos impostos.
+- Imposto de renda e contribuição social.
+- Lucro líquido.
+- Participações atribuíveis aos acionistas controladores e não controladores.
+
+Identificar:
+
+- Crescimento da receita.
+- Crescimento dos custos.
+- Evolução das despesas.
+- Expansão ou contração das margens.
+- Crescimento do lucro.
+- Lucros extraordinários.
+- Resultados não recorrentes.
+- Pressão das despesas financeiras.
+- Qualidade do lucro.
+
+### Demonstração dos Fluxos de Caixa (DFC)
+
+Analisar:
+
+FLUXO DE CAIXA OPERACIONAL:
+- Lucro líquido.
+- Depreciação e amortização.
+- Variações de capital de giro.
+- Provisões.
+- Ajustes sem efeito caixa.
+- Caixa gerado pelas operações.
+
+FLUXO DE CAIXA DE INVESTIMENTO:
+- Aquisição de imobilizado.
+- Aquisição de intangível.
+- Investimentos.
+- Alienação de ativos.
+- Aquisições de empresas.
+
+FLUXO DE CAIXA DE FINANCIAMENTO:
+- Captação de empréstimos.
+- Pagamento de dívidas.
+- Emissão de ações.
+- Recompra de ações.
+- Pagamento de dividendos.
+- Pagamento de juros, respeitando a classificação contábil adotada.
+
+Identificar:
+
+- Capacidade de transformar lucro em caixa.
+- Dependência de financiamento externo.
+- Necessidade de investimentos.
+- Sustentabilidade dos dividendos.
+- Conversão de EBITDA em caixa.
+- Evolução do fluxo de caixa livre.
+
+## 4.2. Indicadores de liquidez
+
+Calcular e interpretar:
+
+LIQUIDEZ CORRENTE:
+
+Ativo Circulante / Passivo Circulante.
+
+LIQUIDEZ SECA:
+
+(Ativo Circulante - Estoques - Despesas antecipadas relevantes) / Passivo Circulante.
+
+LIQUIDEZ IMEDIATA:
+
+Disponibilidades / Passivo Circulante.
+
+LIQUIDEZ GERAL:
+
+(Ativo Circulante + Realizável a Longo Prazo) / (Passivo Circulante + Passivo Não Circulante).
+
+Para cada indicador, apresentar:
+
+- Valor atual.
+- Histórico.
+- Variação percentual.
+- Tendência.
+- Interpretação.
+- Pontos positivos.
+- Pontos negativos.
+- Riscos.
+- Comparação setorial.
+- Conclusão.
+
+Não classificar automaticamente uma liquidez elevada como excelente. Avaliar também a eficiência na utilização dos recursos.
+
+## 4.3. Indicadores de endividamento
+
+Calcular:
+
+ENDIVIDAMENTO GERAL:
+
+Passivo Exigível / Ativo Total.
+
+PARTICIPAÇÃO DE CAPITAL DE TERCEIROS:
+
+Passivo Exigível / Patrimônio Líquido.
+
+DÍVIDA LÍQUIDA:
+
+Dívida Bruta - Caixa e Equivalentes.
+
+DÍVIDA LÍQUIDA / EBITDA:
+
+Dívida Líquida / EBITDA.
+
+DÍVIDA BRUTA / PATRIMÔNIO LÍQUIDO:
+
+Dívida Bruta / Patrimônio Líquido.
+
+COBERTURA DE JUROS:
+
+EBIT / Despesas Financeiras com Juros.
+
+Também avaliar:
+
+- Dívida de curto prazo.
+- Dívida de longo prazo.
+- Cronograma de vencimentos.
+- Custo médio da dívida.
+- Exposição ao CDI.
+- Exposição à inflação.
+- Exposição cambial.
+- Covenants financeiros.
+- Capacidade de refinanciamento.
+- Dependência de novas captações.
+- Relação entre dívida e geração operacional de caixa.
+
+Identificar sinais de deterioração financeira.
+
+Criar alertas quando:
+
+- A dívida cresce mais rapidamente que o EBITDA.
+- A dívida líquida aumenta continuamente.
+- O caixa diminui significativamente.
+- A cobertura de juros se deteriora.
+- A empresa apresenta patrimônio líquido negativo.
+- Existem vencimentos relevantes sem cobertura adequada.
+
+Tratar índices negativos e denominadores próximos de zero como situações especiais, sem produzir conclusões matematicamente inválidas.
+
+## 4.4. Indicadores de rentabilidade
+
+Calcular:
+
+ROE:
+
+Lucro Líquido / Patrimônio Líquido Médio.
+
+ROA:
+
+Lucro Líquido / Ativo Total Médio.
+
+ROIC:
+
+NOPAT / Capital Investido Médio.
+
+Onde:
+
+NOPAT = EBIT × (1 - Alíquota Efetiva Normalizada de Impostos).
+
+Capital Investido = Dívida Financeira + Patrimônio Líquido - Caixa Excedente e Ativos Não Operacionais pertinentes.
+
+ROIC deve ser calculado com critérios consistentes, evitando dupla contagem de itens.
+
+Margem Bruta:
+
+Lucro Bruto / Receita Líquida.
+
+Margem EBITDA:
+
+EBITDA / Receita Líquida.
+
+Margem EBIT:
+
+EBIT / Receita Líquida.
+
+Margem Líquida:
+
+Lucro Líquido / Receita Líquida.
+
+Margem FCF:
+
+Fluxo de Caixa Livre / Receita Líquida.
+
+Interpretar:
+
+- Evolução da rentabilidade.
+- Eficiência operacional.
+- Qualidade do capital investido.
+- Capacidade de gerar retorno.
+- Sustentabilidade das margens.
+- Diferença entre crescimento e criação de valor.
+- Comparação com custo de capital.
+
+Destacar empresas que apresentam ROIC persistentemente superior ao WACC.
+
+## 4.5. Indicadores de eficiência operacional
+
+Calcular:
+
+GIRO DO ATIVO:
+
+Receita Líquida / Ativo Total Médio.
+
+GIRO DE ESTOQUES:
+
+CMV / Estoque Médio.
+
+PRAZO MÉDIO DE ESTOCAGEM:
+
+Estoque Médio / CMV × 360.
+
+PRAZO MÉDIO DE RECEBIMENTO:
+
+Contas a Receber Médio / Receita Líquida × 360.
+
+PRAZO MÉDIO DE PAGAMENTO:
+
+Fornecedores Médios / Compras a Prazo × 360.
+
+CICLO OPERACIONAL:
+
+Prazo Médio de Estocagem + Prazo Médio de Recebimento.
+
+CICLO DE CONVERSÃO DE CAIXA:
+
+Ciclo Operacional - Prazo Médio de Pagamento.
+
+Quando os dados necessários não estiverem disponíveis, informar a limitação e não inventar resultados.
+
+Analisar também:
+
+- Evolução da produtividade.
+- Eficiência dos ativos.
+- Utilização da capacidade produtiva.
+- Despesas administrativas sobre receita.
+- Despesas comerciais sobre receita.
+- Produtividade por unidade de negócio, quando disponível.
+
+## 4.6. Indicadores de crescimento
+
+Calcular CAGR para:
+
+- Receita líquida.
+- EBITDA.
+- EBIT.
+- Lucro líquido.
+- Patrimônio líquido.
+- Ativo total.
+- Fluxo de caixa operacional.
+- Fluxo de caixa livre.
+- Dividendos por ação.
+
+Fórmula:
+
+CAGR = (Valor Final / Valor Inicial)^(1 / Número de Anos) - 1.
+
+Analisar horizontes de:
+
+- 1 ano.
+- 3 anos.
+- 5 anos.
+- 10 anos, quando houver dados suficientes.
+
+Diferenciar:
+
+- Crescimento orgânico.
+- Crescimento por aquisições.
+- Crescimento por aumento de preços.
+- Crescimento por expansão de volume.
+- Crescimento por efeitos cambiais.
+- Crescimento extraordinário.
+
+Não interpretar crescimento histórico como garantia de crescimento futuro.
+
+## 4.7. Indicadores de geração de caixa
+
+Calcular:
+
+FLUXO DE CAIXA LIVRE PARA A FIRMA:
+
+FCFF = EBIT × (1 - T) + Depreciação e Amortização - CAPEX - Variação do Capital de Giro.
+
+FLUXO DE CAIXA LIVRE PARA O ACIONISTA:
+
+FCFE = Lucro Líquido + Depreciação e Amortização - CAPEX - Variação do Capital de Giro + Captação Líquida de Dívida.
+
+Calcular também:
+
+- FCF Yield.
+- Conversão de lucro em caixa.
+- CAPEX / Receita.
+- CAPEX / Depreciação.
+- Caixa operacional / Lucro líquido.
+- Dividendos / FCF.
+- FCF / Dívida Líquida.
+
+Analisar se a empresa gera caixa suficiente para:
+
+- Financiar suas operações.
+- Financiar investimentos.
+- Reduzir endividamento.
+- Pagar dividendos.
+- Recomprar ações.
+- Financiar crescimento.
+
+## 4.8. Indicadores de mercado e avaliação relativa
+
+Calcular:
+
+- P/L.
+- P/VP.
+- P/Sales.
+- EV/EBITDA.
+- EV/EBIT.
+- EV/Receita.
+- P/FCF.
+- Dividend Yield.
+- Earnings Yield.
+- FCF Yield.
+- PEG Ratio.
+- Valor de mercado.
+- Enterprise Value.
+- Valor patrimonial por ação.
+- Lucro por ação.
+- Receita por ação.
+
+Cada múltiplo deverá apresentar:
+
+- Fórmula.
+- Valor atual.
+- Histórico.
+- Média histórica.
+- Mediana histórica.
+- Comparação setorial.
+- Interpretação.
+- Limitações.
+
+Nunca interpretar um múltiplo isoladamente.
+
+Exemplo: P/L baixo pode representar oportunidade ou refletir deterioração dos fundamentos.
+
+## 4.9. Qualidade dos lucros
+
+Criar um módulo específico de qualidade dos resultados.
+
+Verificar:
+
+- Lucro líquido versus caixa operacional.
+- Crescimento de contas a receber.
+- Crescimento de estoques.
+- Provisões relevantes.
+- Reversões de provisões.
+- Receitas não recorrentes.
+- Ganhos com venda de ativos.
+- Capitalização de despesas.
+- Mudanças nas políticas contábeis.
+- Reclassificações contábeis.
+- Aumento de ativos intangíveis.
+- Reconhecimento de receitas.
+- Operações com partes relacionadas.
+
+Calcular indicadores de accruals quando os dados permitirem.
+
+Utilizar o Beneish M-Score somente quando todas as variáveis e premissas necessárias estiverem disponíveis, informando suas limitações.
+
+Criar um diagnóstico de qualidade dos lucros:
+
+- Excelente.
+- Boa.
+- Regular.
+- Fraca.
+- Crítica.
+- Dados insuficientes.
+
+Não fazer acusações de fraude com base em indicadores estatísticos. Apontar sinais que exigem investigação.
+
+## 4.10. Análise histórica e tendências
+
+Permitir análises:
+
+- Trimestrais.
+- Anuais.
+- Últimos 12 meses (LTM).
+- Séries históricas de 3, 5 e 10 anos.
+
+Criar gráficos de:
+
+- Receita.
+- Lucro bruto.
+- EBITDA.
+- EBIT.
+- Lucro líquido.
+- Margens.
+- ROE.
+- ROIC.
+- Dívida líquida.
+- Fluxo de caixa.
+- CAPEX.
+- Dividendos.
+
+Identificar automaticamente tendências:
+
+- Crescimento consistente.
+- Estagnação.
+- Deterioração.
+- Recuperação.
+- Volatilidade elevada.
+
+Distinguir resultados trimestrais, acumulados e anuais para evitar comparações incorretas.
+
+## 4.11. Comparação setorial
+
+Permitir comparar a empresa com concorrentes.
+
+Considerar:
+
+- Margens.
+- Rentabilidade.
+- Endividamento.
+- Crescimento.
+- Valuation.
+- Eficiência.
+- Geração de caixa.
+- Dividendos.
+
+Criar rankings setoriais e identificar posicionamento relativo.
+
+Não comparar empresas de modelos de negócio incompatíveis.
+
+## 4.12. Resultado do Pilar Financeiro
+
+Gerar:
+
+1. Diagnóstico geral.
+2. Nota financeira de 0 a 100.
+3. Indicadores mais fortes.
+4. Indicadores mais fracos.
+5. Tendências positivas.
+6. Tendências negativas.
+7. Principais riscos financeiros.
+8. Comparação setorial.
+9. Evolução histórica.
+10. Conclusão técnica.
+
+A nota deve ser explicável e baseada em critérios configuráveis, não em limites universais arbitrários.
+
+---
+
+# 5. PILAR 2 — ANÁLISE QUALITATIVA COMPLETA
+
+A análise qualitativa deve investigar aspectos que os números, isoladamente, não conseguem explicar.
+
+Seu objetivo é avaliar a qualidade e a sustentabilidade do negócio.
+
+## 5.1. Modelo de negócio
+
+Identificar:
+
+- O que a empresa vende.
+- Quais produtos oferece.
+- Quais serviços presta.
+- Quem são seus clientes.
+- Como gera receita.
+- Como monetiza seus produtos.
+- Como funciona sua cadeia produtiva.
+- Como distribui seus produtos.
+- Como conquista clientes.
+- Quais são seus principais custos.
+- Quais são suas fontes de vantagem econômica.
+
+Responder:
+
+1. O modelo de negócio é simples ou complexo?
+2. É fácil entender como a empresa ganha dinheiro?
+3. A receita é recorrente?
+4. Existe dependência de poucos clientes?
+5. Existe concentração de fornecedores?
+6. O negócio é escalável?
+7. A demanda é previsível?
+8. O negócio depende fortemente do ciclo econômico?
+9. Existem barreiras à entrada?
+10. O modelo possui perspectivas de longo prazo?
+
+Apresentar uma descrição objetiva do negócio.
+
+## 5.2. Vantagens competitivas (Moat)
+
+Investigar as vantagens competitivas da empresa.
+
+Avaliar:
+
+### Marca
+
+- Reconhecimento.
+- Reputação.
+- Fidelidade.
+- Poder de precificação.
+- Posicionamento de mercado.
+
+### Efeitos de rede
+
+- Crescimento da base de usuários.
+- Benefício gerado pela expansão da rede.
+- Dificuldade de substituição.
+- Dependência de plataformas.
+
+### Custos de troca
+
+- Dificuldade de migração.
+- Custos de substituição.
+- Integração com clientes.
+- Contratos de longo prazo.
+- Dependência tecnológica.
+
+### Vantagem de custos
+
+- Escala produtiva.
+- Eficiência operacional.
+- Poder de negociação.
+- Estrutura logística.
+- Acesso a matérias-primas.
+- Custo unitário.
+
+### Ativos intangíveis
+
+- Patentes.
+- Licenças.
+- Marcas registradas.
+- Tecnologia proprietária.
+- Concessões.
+- Know-how.
+
+### Barreiras regulatórias
+
+- Licenças especiais.
+- Autorizações.
+- Concessões públicas.
+- Exigências regulatórias.
+- Restrições de entrada.
+
+### Escala
+
+- Participação de mercado.
+- Capacidade instalada.
+- Economias de escala.
+- Poder de negociação.
+
+Para cada vantagem, informar:
+
+- Existência.
+- Intensidade.
+- Evidências.
+- Durabilidade.
+- Vulnerabilidades.
+- Concorrentes capazes de neutralizá-la.
+
+Classificar a força competitiva como:
+
+- Muito forte.
+- Forte.
+- Moderada.
+- Fraca.
+- Inexistente ou não demonstrada.
+
+Não afirmar que existe um moat sem evidências.
+
+## 5.3. Gestão e administração
+
+Avaliar:
+
+- Histórico dos executivos.
+- Experiência.
+- Formação profissional.
+- Permanência na administração.
+- Histórico de decisões.
+- Cumprimento de metas.
+- Alocação de capital.
+- Comunicação com acionistas.
+- Transparência.
+- Coerência entre discurso e resultados.
+
+Investigar decisões de:
+
+- Aquisições.
+- Desinvestimentos.
+- Expansão.
+- Endividamento.
+- Emissão de ações.
+- Recompra de ações.
+- Distribuição de dividendos.
+- Investimentos de capital.
+
+Avaliar se a administração cria ou destrói valor.
+
+## 5.4. Alocação de capital
+
+Este módulo deve ser especialmente aprofundado.
+
+Analisar como a empresa utiliza seus recursos.
+
+Avaliar:
+
+1. Reinvestimento na operação.
+2. Expansão produtiva.
+3. Pesquisa e desenvolvimento.
+4. Aquisições.
+5. Redução de dívida.
+6. Pagamento de dividendos.
+7. Recompra de ações.
+8. Retenção de lucros.
+
+Relacionar o crescimento do capital investido com o ROIC incremental.
+
+Avaliar se o reinvestimento produz retornos superiores ao custo de capital.
+
+Identificar:
+
+- Aquisições destrutivas de valor.
+- Investimentos excessivos.
+- Distribuição irresponsável de dividendos.
+- Endividamento para financiar distribuição.
+- Emissão recorrente de ações com diluição.
+- Recompras realizadas a preços elevados.
+
+## 5.5. Governança corporativa
+
+Investigar:
+
+- Composição do conselho.
+- Independência dos conselheiros.
+- Estrutura de controle.
+- Acionistas controladores.
+- Direitos dos minoritários.
+- Tag along.
+- Acordos de acionistas.
+- Política de remuneração.
+- Comitês de auditoria.
+- Auditoria independente.
+- Transações com partes relacionadas.
+- Transparência.
+- Histórico de conflitos societários.
+
+Avaliar os riscos de:
+
+- Conflito de interesses.
+- Expropriação de minoritários.
+- Concentração de poder.
+- Falta de transparência.
+- Problemas de sucessão.
+
+## 5.6. Estrutura acionária
+
+Analisar:
+
+- Controladores.
+- Participação de investidores institucionais.
+- Participação de pessoas físicas.
+- Free float.
+- Ações ordinárias.
+- Ações preferenciais.
+- Classes de ações.
+- Liquidez.
+- Histórico de diluição.
+- Recompra de ações.
+- Participações cruzadas.
+
+Identificar riscos de concentração e conflitos entre acionistas.
+
+## 5.7. Qualidade dos produtos e serviços
+
+Avaliar:
+
+- Diferenciação.
+- Qualidade percebida.
+- Satisfação dos clientes.
+- Fidelização.
+- Taxa de retenção.
+- Reputação.
+- Capacidade de inovação.
+- Obsolescência.
+- Dependência de tecnologia.
+- Poder de precificação.
+
+Utilizar dados públicos, pesquisas e informações verificáveis.
+
+Não inventar avaliações de consumidores.
+
+## 5.8. Mercado e concorrência
+
+Investigar:
+
+- Tamanho do mercado.
+- Crescimento do setor.
+- Participação de mercado.
+- Concorrentes diretos.
+- Concorrentes indiretos.
+- Produtos substitutos.
+- Barreiras de entrada.
+- Poder dos fornecedores.
+- Poder dos clientes.
+- Intensidade competitiva.
+
+Utilizar as cinco forças de Porter:
+
+1. Rivalidade entre concorrentes.
+2. Ameaça de novos entrantes.
+3. Ameaça de produtos substitutos.
+4. Poder de negociação dos fornecedores.
+5. Poder de negociação dos compradores.
+
+Apresentar diagnóstico individual de cada força.
+
+## 5.9. Perspectivas de crescimento
+
+Avaliar:
+
+- Expansão geográfica.
+- Novos produtos.
+- Novos serviços.
+- Novos mercados.
+- Aumento de capacidade.
+- Ganho de participação.
+- Digitalização.
+- Inovação.
+- Aquisições.
+- Tendências demográficas.
+- Mudanças tecnológicas.
+
+Distinguir oportunidades reais de expectativas especulativas.
+
+## 5.10. Riscos qualitativos
+
+Identificar:
+
+### Risco regulatório
+Mudanças em leis, impostos, licenças e normas.
+
+### Risco político
+Interferência estatal, políticas públicas e instabilidade institucional.
+
+### Risco tecnológico
+Obsolescência, inovação disruptiva e dependência tecnológica.
+
+### Risco competitivo
+Perda de participação e pressão de preços.
+
+### Risco operacional
+Falhas produtivas, logísticas e de fornecimento.
+
+### Risco reputacional
+Crises de imagem e perda de confiança.
+
+### Risco ambiental e climático
+Exposição a eventos climáticos e exigências ambientais.
+
+### Risco social
+Condições trabalhistas, relações comunitárias e responsabilidade social.
+
+### Risco jurídico
+Processos, contingências e disputas societárias.
+
+### Risco de concentração
+Dependência de clientes, fornecedores, produtos ou regiões.
+
+## 5.11. Análise ESG
+
+Avaliar:
+
+AMBIENTAL:
+- Emissões.
+- Consumo de água.
+- Consumo de energia.
+- Resíduos.
+- Desmatamento.
+- Eficiência ambiental.
+- Exposição climática.
+
+SOCIAL:
+- Segurança do trabalho.
+- Direitos humanos.
+- Diversidade e inclusão.
+- Relações trabalhistas.
+- Responsabilidade social.
+- Relacionamento com comunidades.
+
+GOVERNANÇA:
+- Transparência.
+- Ética.
+- Controles internos.
+- Independência do conselho.
+- Combate à corrupção.
+- Proteção aos acionistas.
+
+Separar informações divulgadas pela companhia de avaliações independentes.
+
+Não transformar ESG em uma pontuação genérica sem explicar os critérios.
+
+## 5.12. Análise SWOT
+
+Construir uma matriz SWOT:
+
+FORÇAS:
+Características internas positivas.
+
+FRAQUEZAS:
+Características internas negativas.
+
+OPORTUNIDADES:
+Fatores externos favoráveis.
+
+AMEAÇAS:
+Fatores externos desfavoráveis.
+
+Cada item deverá conter:
+
+- Descrição.
+- Evidência.
+- Impacto.
+- Probabilidade.
+- Horizonte temporal.
+
+## 5.13. Ciclo econômico e sensibilidade
+
+Identificar como o negócio reage a:
+
+- Taxa Selic.
+- Inflação.
+- Câmbio.
+- PIB.
+- Taxas de juros internacionais.
+- Preços de commodities.
+- Desemprego.
+- Consumo.
+- Crédito.
+- Política fiscal.
+
+Determinar se a empresa é:
+
+- Defensiva.
+- Cíclica.
+- Sensível a juros.
+- Sensível ao câmbio.
+- Sensível a commodities.
+- Dependente de crédito.
+
+## 5.14. Resultado do Pilar Qualitativo
+
+Produzir:
+
+1. Descrição do negócio.
+2. Qualidade do modelo de negócio.
+3. Força das vantagens competitivas.
+4. Avaliação da gestão.
+5. Qualidade da governança.
+6. Eficiência da alocação de capital.
+7. Posicionamento competitivo.
+8. Perspectivas de crescimento.
+9. Principais riscos.
+10. Análise SWOT.
+11. Análise ESG.
+12. Nota qualitativa de 0 a 100.
+13. Evidências que sustentam a nota.
+14. Pontos que exigem investigação.
+
+A pontuação deve distinguir falta de informação de desempenho ruim.
+
+---
+
+# 6. PILAR 3 — VALUATION COMPLETO
+
+Este módulo deverá estimar o valor econômico do negócio por diferentes metodologias.
+
+Não utilizar apenas P/L ou P/VP para determinar o valor justo.
+
+Os modelos devem ser escolhidos conforme o setor, a estrutura financeira e a natureza econômica da empresa.
+
+## 6.1. Valor de mercado e Enterprise Value
+
+Calcular:
+
+VALOR DE MERCADO:
+
+Preço da ação × Número de ações consideradas.
+
+ENTERPRISE VALUE:
+
+Valor de Mercado + Dívida Financeira - Caixa e Equivalentes + Participações de Não Controladores e demais ajustes pertinentes.
+
+Apresentar:
+
+- Valor de mercado.
+- Dívida bruta.
+- Caixa.
+- Dívida líquida.
+- Enterprise Value.
+- Quantidade de ações.
+- Valor por ação.
+
+Evitar misturar dívida operacional com dívida financeira sem justificativa.
+
+## 6.2. Fluxo de Caixa Descontado (DCF)
+
+Implementar DCF baseado em FCFF.
+
+Fórmula:
+
+FCFF = EBIT × (1 - T) + D&A - CAPEX - Variação do Capital de Giro.
+
+Projetar de cinco a dez anos, conforme a previsibilidade do negócio.
+
+### Etapa 1 — Projeção de receitas
+
+Estimar:
+
+- Crescimento da receita.
+- Volume.
+- Preços.
+- Participação de mercado.
+- Expansão operacional.
+- Capacidade produtiva.
+
+### Etapa 2 — Projeção das margens
+
+Projetar:
+
+- Margem bruta.
+- Margem EBITDA.
+- Margem EBIT.
+- Margem líquida.
+
+Considerar histórico, estratégia e características do setor.
+
+### Etapa 3 — Projeção dos investimentos
+
+Projetar:
+
+- CAPEX.
+- Depreciação.
+- Amortização.
+- Capital de giro.
+- Reinvestimento.
+- Necessidade de financiamento.
+
+### Etapa 4 — Custo de capital
+
+Calcular WACC.
+
+Fórmula:
+
+WACC = (E / (D + E)) × Ke + (D / (D + E)) × Kd × (1 - T).
+
+Onde:
+
+E = Valor de mercado do patrimônio.
+D = Valor de mercado ou aproximação fundamentada da dívida.
+Ke = Custo do capital próprio.
+Kd = Custo da dívida.
+T = Alíquota efetiva ou normalizada de impostos aplicável.
+
+### Etapa 5 — CAPM
+
+Calcular o custo do capital próprio:
+
+Ke = Rf + β × (Rm - Rf).
+
+Permitir considerar:
+
+- Taxa livre de risco.
+- Beta.
+- Prêmio de risco de mercado.
+- Prêmio de risco-país.
+- Outros ajustes, quando tecnicamente justificados.
+
+Não somar prêmios duas vezes.
+
+Registrar a origem e a data de cada premissa.
+
+### Etapa 6 — Valor terminal
+
+Utilizar modelo de crescimento perpétuo:
+
+VT = FCFF do ano seguinte / (WACC - g).
+
+Garantir que:
+
+WACC > g.
+
+Também permitir valuation por múltiplo de saída, quando apropriado.
+
+### Etapa 7 — Desconto dos fluxos
+
+Descontar os fluxos projetados pelo WACC.
+
+Calcular:
+
+- Valor presente dos fluxos explícitos.
+- Valor presente do valor terminal.
+- Enterprise Value.
+- Dívida líquida.
+- Ajustes não operacionais.
+- Equity Value.
+- Valor justo por ação.
+
+### Etapa 8 — Margem de segurança
+
+Calcular:
+
+Margem de Segurança = 1 - (Preço de Mercado / Valor Justo).
+
+Exibir o resultado em percentual.
+
+Permitir que o usuário defina a margem mínima desejada.
+
+## 6.3. DCF por FCFE
+
+Implementar também o fluxo de caixa livre para o acionista.
+
+Projetar FCFE e descontar pelo custo do capital próprio.
+
+O resultado deverá representar diretamente o valor do patrimônio líquido.
+
+Não descontar FCFE pelo WACC.
+
+## 6.4. Dividend Discount Model (DDM)
+
+Implementar modelo de desconto de dividendos.
+
+Modelo de Gordon:
+
+P0 = D1 / (Ke - g).
+
+Permitir modelos:
+
+- Gordon Growth.
+- Dois estágios.
+- Três estágios.
+
+Aplicar especialmente em empresas com distribuição previsível de dividendos.
+
+Verificar:
+
+- Histórico de dividendos.
+- Payout.
+- Sustentabilidade.
+- Crescimento.
+- Capacidade de geração de caixa.
+
+## 6.5. Valuation por múltiplos
+
+Implementar:
+
+- P/L.
+- P/VP.
+- EV/EBITDA.
+- EV/EBIT.
+- EV/Receita.
+- P/FCF.
+- Dividend Yield.
+- PEG.
+
+Comparar:
+
+- Histórico da empresa.
+- Concorrentes.
+- Mediana setorial.
+- Média setorial.
+- Empresas comparáveis.
+
+Permitir estimar preço justo utilizando múltiplos normalizados.
+
+Exemplo:
+
+Preço Justo = Lucro por Ação Normalizado × P/L Justo.
+
+O sistema deve explicar como o múltiplo de referência foi selecionado.
+
+## 6.6. Valuation por patrimônio e ativos
+
+Implementar:
+
+- Valor patrimonial ajustado.
+- Net Asset Value.
+- Valor de liquidação, quando aplicável.
+- Avaliação de ativos não operacionais.
+- Ajustes de contingências.
+- Ajustes de ativos superavaliados.
+- Participações societárias.
+
+Especialmente relevante para holdings, empresas imobiliárias e companhias com grande volume de ativos.
+
+## 6.7. Modelo de renda residual
+
+Implementar o Residual Income Model:
+
+Valor Patrimonial + Valor Presente dos Lucros Residuais Futuros.
+
+Lucro Residual = Lucro Líquido - (Custo do Capital Próprio × Patrimônio Líquido Inicial).
+
+Utilizar principalmente quando apropriado para empresas financeiras e negócios cujo patrimônio contábil possui relevância econômica.
+
+## 6.8. Cenários de valuation
+
+Criar três cenários obrigatórios:
+
+CONSERVADOR:
+- Crescimento reduzido.
+- Margens pressionadas.
+- Custo de capital mais elevado.
+- Risco maior.
+- Premissas prudentes.
+
+BASE:
+- Crescimento esperado.
+- Margens sustentáveis.
+- Premissas compatíveis com o histórico e as perspectivas fundamentadas.
+
+OTIMISTA:
+- Crescimento superior.
+- Ganhos de eficiência.
+- Expansão de margens.
+- Menor pressão operacional.
+
+Cada cenário deverá apresentar:
+
+- Receita projetada.
+- EBITDA projetado.
+- EBIT projetado.
+- Lucro líquido projetado.
+- FCFF.
+- WACC.
+- Crescimento terminal.
+- Enterprise Value.
+- Equity Value.
+- Valor justo por ação.
+- Margem de segurança.
+
+Não criar cenários otimistas sem evidências.
+
+## 6.9. Análise de sensibilidade
+
+Criar matrizes de sensibilidade para:
+
+- WACC.
+- Crescimento terminal.
+- Crescimento da receita.
+- Margem EBITDA.
+- Margem EBIT.
+- CAPEX.
+- Capital de giro.
+
+Permitir visualizar como pequenas mudanças nas premissas alteram o valor justo.
+
+Criar gráficos de sensibilidade.
+
+## 6.10. Reverse DCF
+
+Implementar Reverse DCF.
+
+Objetivo: descobrir quais premissas de crescimento e geração de caixa estão implicitamente incorporadas no preço de mercado.
+
+Responder:
+
+- Qual crescimento o mercado está precificando?
+- Qual margem operacional está implícita?
+- Qual nível de geração de caixa é necessário?
+- Quais premissas justificariam o preço atual?
+- O preço exige expectativas excessivamente otimistas?
+
+## 6.11. Valuation específico para bancos e seguradoras
+
+Não aplicar mecanicamente EV/EBITDA ou DCF convencional a instituições financeiras.
+
+Implementar metodologias apropriadas:
+
+- P/VP.
+- P/L.
+- ROE.
+- Custo do capital próprio.
+- Residual Income.
+- Dividend Discount Model.
+- Crescimento sustentável.
+- Qualidade dos ativos.
+- Inadimplência.
+- Provisões.
+- Índices de capital regulatório.
+
+Para bancos, analisar:
+
+- Margem financeira.
+- NIM.
+- Carteira de crédito.
+- Inadimplência.
+- Cobertura de provisões.
+- Custo de crédito.
+- Índice de Basileia.
+- Eficiência operacional.
+- ROE.
+
+Para seguradoras, analisar:
+
+- Prêmios emitidos.
+- Sinistralidade.
+- Combined Ratio.
+- Reservas técnicas.
+- Resultado financeiro.
+- Adequação de capital.
+- Crescimento de prêmios.
+
+## 6.12. Valuation específico para FIIs
+
+O aplicativo deverá possuir metodologia própria para fundos imobiliários.
+
+Avaliar:
+
+- P/VP.
+- Dividend Yield.
+- Rendimento mensal por cota.
+- Histórico de distribuição.
+- Vacância física.
+- Vacância financeira.
+- Inadimplência.
+- Diversificação.
+- Qualidade dos imóveis.
+- Localização.
+- Prazo dos contratos.
+- Revisões contratuais.
+- WAULT.
+- Concentração de inquilinos.
+- Concentração de ativos.
+- Alavancagem.
+- Liquidez.
+- Gestão.
+- Taxas.
+- Emissões.
+- Cap rate.
+- Valor patrimonial.
+- Qualidade dos laudos.
+
+Separar:
+
+### FIIs de tijolo
+Analisar propriedades, locatários, vacância, aluguel, cap rate, localização e potencial de valorização.
+
+### FIIs de papel
+Analisar CRIs, indexadores, spreads, devedores, garantias, LTV, subordinação, inadimplência e concentração de crédito.
+
+### FIIs híbridos
+Analisar individualmente cada fonte de renda.
+
+### FIIs de fundos
+Analisar composição da carteira, qualidade dos fundos investidos, custos e concentração.
+
+O valuation deve considerar os fluxos de distribuição, o patrimônio e os riscos específicos do fundo.
+
+Não utilizar o mesmo modelo de valuation de empresas operacionais para FIIs.
+
+## 6.13. Resultado do Pilar Valuation
+
+Apresentar:
+
+1. Valor justo pelo DCF.
+2. Valor justo pelo FCFE, quando aplicável.
+3. Valor justo por múltiplos.
+4. Valor justo por dividendos, quando aplicável.
+5. Valor justo por patrimônio.
+6. Valor justo por modelo específico do setor.
+7. Cenário conservador.
+8. Cenário base.
+9. Cenário otimista.
+10. Preço atual.
+11. Potencial de valorização.
+12. Margem de segurança.
+13. Principais premissas.
+14. Sensibilidade.
+15. Grau de confiança da estimativa.
+
+Não produzir uma média automática de modelos incompatíveis.
+
+Criar uma metodologia de reconciliação, atribuindo maior peso aos modelos mais adequados ao negócio e justificando os pesos.
+
+---
+
+# 7. MOTOR INTELIGENTE DE INTERPRETAÇÃO
+
+Criar um motor de análise que interprete os três pilares.
+
+Não basta apresentar números.
+
+Para cada indicador, o sistema deve responder:
+
+1. O que o indicador mede?
+2. Qual é sua fórmula?
+3. Qual é o resultado?
+4. Como evoluiu?
+5. O que esse resultado significa?
+6. Qual é sua importância para o setor?
+7. Quais são os fatores que explicam seu comportamento?
+8. Quais são as consequências?
+9. Existem riscos?
+10. Qual é a conclusão?
+
+Exemplo de interpretação:
+
+"ROIC de 18%: a empresa apresenta retorno operacional sobre o capital investido de 18%. Considerando um WACC estimado de 12%, existe um spread positivo de aproximadamente 6 pontos percentuais, indicando criação de valor econômico nas premissas utilizadas. É necessário verificar se esse retorno é recorrente e sustentável."
+
+Toda interpretação deverá ser baseada em dados efetivamente disponíveis.
+
+Criar três níveis de análise:
+
+- Diagnóstico automático.
+- Análise aprofundada.
+- Relatório profissional.
+
+---
+
+# 8. SISTEMA DE PONTUAÇÃO INTEGRADA
+
+Criar um sistema de scoring de 0 a 100 para cada pilar.
+
+Pontuação sugerida:
+
+PILAR FINANCEIRO:
+- Liquidez: 10 pontos.
+- Endividamento: 15 pontos.
+- Rentabilidade: 20 pontos.
+- Eficiência operacional: 10 pontos.
+- Crescimento: 10 pontos.
+- Geração de caixa: 20 pontos.
+- Qualidade dos lucros: 15 pontos.
+
+PILAR QUALITATIVO:
+- Modelo de negócio: 15 pontos.
+- Vantagens competitivas: 20 pontos.
+- Gestão: 15 pontos.
+- Governança: 15 pontos.
+- Alocação de capital: 15 pontos.
+- Mercado e concorrência: 10 pontos.
+- Riscos e sustentabilidade: 10 pontos.
+
+PILAR VALUATION:
+- Adequação metodológica: 15 pontos.
+- Potencial de valorização: 20 pontos.
+- Margem de segurança: 25 pontos.
+- Sustentabilidade das premissas: 15 pontos.
+- Sensibilidade e riscos: 15 pontos.
+- Consistência entre métodos: 10 pontos.
+
+Esses pesos são uma configuração inicial e devem ser calibráveis.
+
+IMPORTANTE:
+
+- Não pontuar indicadores inexistentes como se fossem zero.
+- Não premiar automaticamente empresas apenas por apresentarem múltiplos baixos.
+- Não classificar uma empresa como boa apenas pelo valuation.
+- Não confundir qualidade da empresa com atratividade do preço.
+- Não penalizar empresas por dados que não são aplicáveis ao setor.
+- Criar pesos específicos por setor.
+
+Criar também um índice de cobertura e confiabilidade dos dados, independente da pontuação fundamentalista.
+
+A nota geral poderá ser calculada por:
+
+Nota Geral = (Nota Financeira × 35%) + (Nota Qualitativa × 35%) + (Nota Valuation × 30%).
+
+Esses pesos devem ser configuráveis e acompanhados de justificativa metodológica.
+
+O resultado deve exibir separadamente as três notas, evitando que uma nota geral esconda problemas graves em algum pilar.
+
+---
+
+# 9. MOTOR DE ALERTAS E DETECÇÃO DE RISCOS
+
+Criar alertas automáticos para:
+
+- Dívida crescente.
+- Queda de liquidez.
+- Margens em deterioração.
+- Lucro em queda.
+- Fluxo de caixa negativo recorrente.
+- Aumento expressivo de despesas.
+- Dividendos não cobertos pelo caixa.
+- Diluição acionária.
+- Aumento de contas a receber.
+- Deterioração do capital de giro.
+- Queda de ROIC.
+- ROIC inferior ao WACC.
+- Governança problemática documentada.
+- Mudanças relevantes na administração.
+- Resultados não recorrentes elevados.
+- Risco de concentração.
+- Valuation dependente de premissas agressivas.
+
+Cada alerta deve conter:
+
+- Gravidade.
+- Indicador relacionado.
+- Evidência.
+- Período.
+- Impacto potencial.
+- Explicação.
+- Recomendação de investigação.
+
+Classificação:
+
+- Informativo.
+- Atenção.
+- Alto risco.
+- Crítico.
+
+---
+
+# 10. FONTES DE DADOS E CONFIABILIDADE
+
+O sistema deverá utilizar fontes confiáveis e legalmente acessíveis.
+
+Priorizar:
+
+- CVM.
+- B3.
+- Relações com Investidores das companhias.
+- Formulários de Referência.
+- Demonstrações Financeiras Padronizadas.
+- Informações Trimestrais.
+- Relatórios anuais.
+- Comunicados ao mercado.
+- Dados do Banco Central.
+- IBGE.
+- ANBIMA, quando aplicável.
+- Documentos oficiais dos fundos.
+- Relatórios gerenciais de FIIs.
+- Fontes de mercado autorizadas.
+
+Para cada informação, armazenar:
+
+- Valor.
+- Unidade.
+- Moeda.
+- Período de referência.
+- Data de divulgação.
+- Fonte.
+- URL ou identificação documental.
+- Data da coleta.
+- Data da última atualização.
+- Metodologia de cálculo.
+- Indicador de qualidade.
+
+Não confundir data de divulgação com período de referência.
+
+Não misturar dados trimestrais, acumulados e anuais sem normalização.
+
+Não apresentar dados antigos como atuais.
+
+Quando uma fonte estiver indisponível:
+
+- Informar a indisponibilidade.
+- Exibir a última atualização.
+- Não inventar valores.
+- Não preencher lacunas com estimativas silenciosas.
+
+Implementar cache, controle de atualizações e tratamento de falhas.
+
+---
+
+# 11. SISTEMA DE INTELIGÊNCIA ARTIFICIAL
+
+Integrar a inteligência artificial como camada de interpretação, não como substituta dos cálculos financeiros.
+
+A IA deverá:
+
+- Explicar indicadores.
+- Interpretar demonstrações financeiras.
+- Resumir relatórios oficiais.
+- Identificar riscos.
+- Comparar concorrentes.
+- Explicar divergências entre resultados e caixa.
+- Interpretar mudanças de margens.
+- Analisar a sustentabilidade dos dividendos.
+- Interpretar premissas de valuation.
+- Gerar relatórios executivos.
+- Responder perguntas sobre empresas.
+
+Regras obrigatórias:
+
+1. A IA não poderá inventar dados.
+2. A IA não poderá modificar resultados matemáticos.
+3. A IA deverá utilizar os dados fornecidos pelo motor financeiro.
+4. A IA deverá indicar as fontes utilizadas.
+5. A IA deverá separar fatos, estimativas e opiniões analíticas.
+6. A IA deverá informar quando não houver dados suficientes.
+7. A IA deverá apontar divergências entre fontes.
+8. A IA deverá explicar incertezas.
+9. A IA não deverá apresentar previsões como certezas.
+10. A IA não deverá recomendar compra ou venda sem apresentar a fundamentação, os riscos e as limitações.
+
+Utilizar os modelos Gemini disponíveis no Google AI Studio conforme sua disponibilidade e documentação atual.
+
+Separar chamadas de IA da lógica determinística dos indicadores.
+
+---
+
+# 12. INTERFACE E EXPERIÊNCIA DO USUÁRIO
+
+Criar uma interface profissional, moderna e adequada a escritórios de investimentos.
+
+Manter a identidade visual existente sempre que possível.
+
+Criar uma página individual de análise para cada ativo.
+
+## Tela 1 — Visão geral
+
+Apresentar:
+
+- Nome.
+- Ticker.
+- Setor.
+- Segmento.
+- Preço atual.
+- Valor de mercado.
+- Dividend Yield.
+- P/L.
+- P/VP.
+- ROE.
+- ROIC.
+- Dívida líquida/EBITDA.
+- Valor justo.
+- Margem de segurança.
+- Nota financeira.
+- Nota qualitativa.
+- Nota valuation.
+- Nota geral.
+
+## Tela 2 — Análise financeira
+
+Criar abas:
+
+- Balanço Patrimonial.
+- DRE.
+- Fluxo de Caixa.
+- Liquidez.
+- Endividamento.
+- Rentabilidade.
+- Eficiência.
+- Crescimento.
+- Geração de caixa.
+- Qualidade dos lucros.
+- Indicadores de mercado.
+- Comparação histórica.
+
+## Tela 3 — Análise qualitativa
+
+Criar abas:
+
+- Modelo de negócio.
+- Vantagens competitivas.
+- Gestão.
+- Alocação de capital.
+- Governança.
+- Estrutura acionária.
+- Mercado.
+- Concorrência.
+- Perspectivas.
+- Riscos.
+- ESG.
+- SWOT.
+
+## Tela 4 — Valuation
+
+Criar abas:
+
+- DCF.
+- FCFE.
+- DDM.
+- Múltiplos.
+- Patrimônio.
+- Reverse DCF.
+- Cenários.
+- Sensibilidade.
+- Premissas.
+- Reconciliação dos modelos.
+
+## Tela 5 — Conclusão
+
+Apresentar:
+
+- Diagnóstico integrado.
+- Qualidade financeira.
+- Qualidade do negócio.
+- Valor econômico.
+- Preço de mercado.
+- Margem de segurança.
+- Riscos relevantes.
+- Pontos fortes.
+- Pontos fracos.
+- Grau de confiabilidade.
+- Conclusão fundamentada.
+
+## Recursos visuais
+
+Utilizar:
+
+- Gráficos históricos.
+- Gráficos de evolução.
+- Gráficos comparativos.
+- Matrizes de sensibilidade.
+- Tabelas financeiras.
+- Indicadores de tendência.
+- Alertas visuais.
+- Rankings.
+- Diagramas de composição.
+- Comparações setoriais.
+
+A interface deverá ser responsiva e funcionar em desktop, tablet e celular.
+
+Priorizar leitura rápida, mas permitir aprofundamento técnico em cada indicador.
+
+---
+
+# 13. COMPARADOR PROFISSIONAL DE EMPRESAS
+
+Permitir comparar até quatro empresas simultaneamente.
+
+Comparar:
+
+- Indicadores financeiros.
+- Rentabilidade.
+- Crescimento.
+- Endividamento.
+- Margens.
+- Geração de caixa.
+- Vantagens competitivas.
+- Governança.
+- Riscos.
+- Valuation.
+- Margem de segurança.
+- Pontuação dos três pilares.
+
+Criar classificação comparativa.
+
+A comparação deverá considerar empresas do mesmo setor e modelos de negócio semelhantes.
+
+---
+
+# 14. RELATÓRIOS PROFISSIONAIS
+
+Criar geração de relatórios em PDF com identidade visual profissional.
+
+O relatório deverá conter:
+
+1. Capa.
+2. Identificação do ativo.
+3. Resumo executivo.
+4. Metodologia.
+5. Análise financeira.
+6. Análise qualitativa.
+7. Valuation.
+8. Cenários.
+9. Comparação setorial.
+10. Riscos.
+11. Indicadores.
+12. Gráficos.
+13. Conclusão.
+14. Fontes.
+15. Data de referência.
+16. Limitações da análise.
+
+Permitir:
+
+- Relatório resumido.
+- Relatório completo.
+- Relatório técnico.
+- Relatório comparativo.
+- Relatório de valuation.
+
+Não gerar relatórios com informações sem fonte ou dados desatualizados sem sinalização.
+
+---
+
+# 15. ESPECIALIZAÇÃO POR SETOR
+
+Criar regras específicas para os seguintes segmentos:
+
+- Bancos.
+- Seguradoras.
+- Energia elétrica.
+- Saneamento.
+- Petróleo e gás.
+- Mineração.
+- Siderurgia.
+- Varejo.
+- Construção civil.
+- Incorporadoras.
+- Agronegócio.
+- Tecnologia.
+- Telecomunicações.
+- Transporte e logística.
+- Indústria.
+- Saúde.
+- Educação.
+- Holdings.
+- FIIs.
+
+Cada setor deverá possuir:
+
+- Indicadores prioritários.
+- Indicadores não aplicáveis.
+- Critérios de comparação.
+- Modelos de valuation adequados.
+- Riscos específicos.
+- Critérios de qualidade.
+- Parâmetros de interpretação.
+
+Exemplos:
+
+Bancos:
+ROE, ROA, NIM, inadimplência, Basileia, custo de crédito e P/VP.
+
+Varejo:
+Margem bruta, margem EBITDA, giro de estoque, capital de giro e vendas mesmas lojas.
+
+Energia elétrica:
+EBITDA, dívida, CAPEX, concessões, eficiência operacional e previsibilidade de receitas.
+
+Mineração:
+Custo de produção, volume produzido, preço das commodities, CAPEX e exposição cambial.
+
+Tecnologia:
+Crescimento de receita, margem bruta, retenção de clientes, receita recorrente, CAC, LTV e geração de caixa.
+
+FIIs:
+P/VP, distribuição, vacância, cap rate, WAULT, qualidade dos ativos e risco de crédito.
+
+Não aplicar os mesmos parâmetros a todos os setores.
+
+---
+
+# 16. SEGURANÇA E MULTIUSUÁRIO
+
+Considerar que o produto será utilizado por escritórios de investimentos.
+
+Implementar:
+
+- Autenticação segura.
+- Controle de permissões.
+- Perfis de usuário.
+- Administradores.
+- Isolamento de dados por organização.
+- Controle de acesso.
+- Registro de atividades.
+- Logs de auditoria.
+- Proteção de dados.
+- Validação de entradas.
+- Proteção contra XSS.
+- Proteção contra injeções.
+- Regras seguras do Firestore.
+- Gerenciamento seguro de segredos.
+- Controle de chamadas à IA.
+- Limites de utilização.
+- Tratamento de erros.
+
+Nunca deixar credenciais administrativas ou chaves privadas expostas no frontend.
+
+Se necessário, implementar Firebase Cloud Functions ou outro backend compatível para operações sensíveis.
+
+Preparar a aplicação para suportar diferentes escritórios e usuários, sem permitir que um escritório visualize dados privados de outro.
+
+---
+
+# 17. METODOLOGIA E INTEGRIDADE MATEMÁTICA
+
+Criar uma camada centralizada de cálculos financeiros.
+
+Não espalhar fórmulas em componentes de interface.
+
+Cada cálculo deverá possuir:
+
+- Nome.
+- Fórmula.
+- Unidade.
+- Entradas necessárias.
+- Regras de validação.
+- Tratamento de dados ausentes.
+- Resultado.
+- Interpretação.
+- Testes automatizados.
+
+Utilizar precisão numérica adequada.
+
+Evitar divisões por zero.
+
+Diferenciar:
+
+- Zero.
+- Valor negativo.
+- Valor indisponível.
+- Valor não aplicável.
+- Valor estimado.
+- Valor divulgado.
+
+Implementar normalização de demonstrações financeiras.
+
+Tratar desdobramentos, grupamentos, bonificações e alterações no número de ações.
+
+Considerar efeitos de inflação, câmbio, mudanças contábeis e eventos não recorrentes.
+
+Utilizar demonstrações consolidadas quando forem a base mais adequada da análise, deixando claro quando forem utilizadas informações individuais.
+
+Manter histórico de alterações dos dados.
+
+---
+
+# 18. TESTES E VALIDAÇÃO
+
+Criar testes unitários para todas as fórmulas.
+
+Validar especialmente:
+
+- ROE.
+- ROA.
+- ROIC.
+- WACC.
+- CAPM.
+- FCFF.
+- FCFE.
+- DCF.
+- Valor terminal.
+- Enterprise Value.
+- Equity Value.
+- P/L.
+- P/VP.
+- EV/EBITDA.
+- Dividend Yield.
+- CAGR.
+- Margem de segurança.
+- Sensibilidade.
+- Pontuação integrada.
+
+Criar casos de teste com:
+
+- Empresas lucrativas.
+- Empresas deficitárias.
+- Empresas endividadas.
+- Empresas com caixa líquido.
+- Empresas com patrimônio negativo.
+- Empresas com fluxo de caixa negativo.
+- Bancos.
+- Seguradoras.
+- FIIs.
+
+Testar também:
+
+- Dados ausentes.
+- Dados inconsistentes.
+- Dados duplicados.
+- Mudança de período.
+- Falha na coleta.
+- Falha da IA.
+- Falha de autenticação.
+- Usuários simultâneos.
+- Permissões.
+
+Não considerar o projeto concluído enquanto os testes críticos não forem aprovados.
+
+---
+
+# 19. CRITÉRIOS DE ACEITAÇÃO
+
+O projeto somente será considerado concluído quando:
+
+1. Os três pilares estiverem implementados.
+2. Todos os cálculos forem executados corretamente.
+3. Os indicadores possuírem interpretações.
+4. A análise qualitativa possuir critérios verificáveis.
+5. O valuation possuir múltiplas metodologias.
+6. Os modelos forem adaptados aos setores.
+7. Os cenários funcionarem.
+8. A análise de sensibilidade funcionar.
+9. Os dados possuírem rastreabilidade.
+10. A comparação de empresas funcionar.
+11. Os relatórios PDF forem gerados corretamente.
+12. A interface estiver responsiva.
+13. O Firebase continuar funcionando.
+14. A segurança estiver revisada.
+15. As funcionalidades anteriores continuarem funcionando.
+16. Os testes críticos forem aprovados.
+17. A aplicação puder ser executada em ambiente de produção.
+
+---
+
+# 20. ESTRATÉGIA DE IMPLEMENTAÇÃO
+
+Não tente desenvolver tudo de uma só vez sem validar cada etapa.
+
+Execute nesta ordem:
+
+FASE 1 — AUDITORIA
+- Examinar código.
+- Mapear funcionalidades.
+- Mapear arquitetura.
+- Identificar problemas.
+- Definir plano técnico.
+
+FASE 2 — MOTOR FINANCEIRO
+- Organizar dados.
+- Implementar demonstrações.
+- Criar fórmulas.
+- Implementar indicadores.
+- Implementar histórico.
+- Criar testes.
+
+FASE 3 — ANÁLISE QUALITATIVA
+- Modelo de negócio.
+- Vantagens competitivas.
+- Gestão.
+- Governança.
+- Riscos.
+- Concorrência.
+- ESG.
+- SWOT.
+
+FASE 4 — VALUATION
+- DCF.
+- FCFE.
+- DDM.
+- Múltiplos.
+- Patrimônio.
+- Modelos setoriais.
+- Cenários.
+- Sensibilidade.
+- Reverse DCF.
+
+FASE 5 — MOTOR INTEGRADO
+- Scoring.
+- Diagnóstico.
+- Alertas.
+- Interpretação.
+- Integração dos pilares.
+
+FASE 6 — INTELIGÊNCIA ARTIFICIAL
+- Explicações.
+- Relatórios.
+- Interpretação de documentos.
+- Perguntas e respostas.
+- Análise contextual.
+
+FASE 7 — INTERFACE E RELATÓRIOS
+- Dashboard.
+- Abas.
+- Gráficos.
+- Comparador.
+- PDF.
+
+FASE 8 — SEGURANÇA E TESTES
+- Firebase.
+- Regras.
+- Permissões.
+- Testes.
+- Correções.
+
+FASE 9 — PRODUÇÃO
+- Documentação.
+- Configuração.
+- Implantação.
+- Validação final.
+
+Ao concluir cada fase:
+
+- Informar o que foi implementado.
+- Informar quais arquivos foram alterados.
+- Informar quais arquivos foram criados.
+- Executar os testes pertinentes.
+- Corrigir problemas encontrados.
+- Identificar o que ainda está pendente.
+
+Não declare uma funcionalidade concluída se ela estiver apenas parcialmente implementada.
+
+---
+
+# 21. DIFERENCIAIS PROFISSIONAIS OBRIGATÓRIOS
+
+O sistema deverá possuir diferenciais que justifiquem sua utilização por escritórios de investimentos:
+
+1. Análise integrada dos três pilares.
+2. Diagnóstico automático e explicável.
+3. Valuation com múltiplos métodos.
+4. Modelos específicos por setor.
+5. Comparação de concorrentes.
+6. Análise histórica de longo prazo.
+7. Identificação de deterioração financeira.
+8. Avaliação de qualidade dos lucros.
+9. Identificação de vantagens competitivas.
+10. Análise de alocação de capital.
+11. Reverse DCF.
+12. Sensibilidade de valuation.
+13. Margem de segurança.
+14. Rastreamento das fontes.
+15. Relatórios técnicos em PDF.
+16. Inteligência artificial contextualizada.
+17. Histórico das análises.
+18. Gestão multiusuário.
+19. Segurança por organização.
+20. Metodologia transparente e configurável.
+
+---
+
+# 22. PADRÃO DE QUALIDADE DAS ANÁLISES
+
+Toda análise produzida deverá obedecer à seguinte estrutura:
+
+### A. Fato observado
+Qual dado foi identificado?
+
+### B. Evidência
+Qual demonstração, documento ou indicador sustenta a afirmação?
+
+### C. Interpretação
+O que o dado representa economicamente?
+
+### D. Contexto
+Como se compara ao histórico e ao setor?
+
+### E. Impacto
+Quais são as consequências para a empresa?
+
+### F. Risco
+O que pode dar errado?
+
+### G. Perspectiva
+Como esse fator pode evoluir?
+
+### H. Conclusão
+Qual é a avaliação fundamentada?
+
+Não apresentar conclusões sem fundamentação.
+
+Distinguir claramente fatos, estimativas, premissas, hipóteses e opiniões.
+
+Toda análise deverá informar sua data de referência.
+
+---
+
+# 23. OBJETIVO COMERCIAL DO PRODUTO
+
+O produto será comercializado por venda única, com valor pretendido de R$ 20.000, tendo como público-alvo escritórios de investimentos.
+
+Portanto, desenvolva uma solução com padrão profissional de apresentação, funcionamento e documentação.
+
+O sistema deve transmitir:
+
+- Credibilidade.
+- Precisão.
+- Transparência.
+- Profundidade analítica.
+- Segurança.
+- Organização.
+- Facilidade de utilização.
+- Confiabilidade.
+
+Não desenvolver um produto com aparência de projeto experimental.
+
+Não sacrificar precisão financeira em troca de aparência visual.
+
+Não adicionar funcionalidades apenas para aumentar a quantidade de telas.
+
+Cada funcionalidade deverá resolver uma necessidade real de análise ou operação.
+
+A plataforma precisa demonstrar valor comercial por meio da qualidade dos resultados, da consistência metodológica e da eficiência do trabalho dos analistas.
+
+---
+
+# 24. INSTRUÇÃO FINAL AO AGENTE
+
+Agora examine o código-fonte original e comece a transformação do aplicativo.
+
+Sua prioridade é implementar uma plataforma realmente funcional, com os três pilares profundamente integrados.
+
+Pense como um analista fundamentalista profissional e execute como um engenheiro de software sênior.
+
+Não entregue apenas explicações, protótipos ou sugestões.
+
+Implemente o código.
+
+Não substitua funcionalidades existentes sem justificativa.
+
+Não invente fontes, números ou informações.
+
+Não simplifique metodologias financeiras complexas de maneira que comprometa sua precisão.
+
+Não aplique fórmulas inadequadas a setores específicos.
+
+Não oculte limitações dos dados.
+
+Não declare sucesso sem testar.
+
+Se alguma informação, integração ou fonte não estiver disponível, implemente uma estrutura preparada para recebê-la, sinalizando claramente sua indisponibilidade.
+
+**RESULTADO FINAL ESPERADO:**
+
+Uma plataforma completa de análise fundamentalista, capaz de avaliar empresas e FIIs por meio de:
+
+1. ANÁLISE FINANCEIRA PROFUNDA.
+2. ANÁLISE QUALITATIVA ESTRATÉGICA.
+3. VALUATION PROFISSIONAL.
+
+Os três pilares deverão funcionar de forma integrada, produzindo diagnósticos fundamentados, indicadores confiáveis, avaliações econômicas, cenários, alertas de risco e relatórios profissionais.
+
+A aplicação deverá estar preparada para utilização por escritórios de investimentos em um ambiente real de trabalho.
+
+**Comece pela auditoria do código existente. Em seguida, apresente o plano de implementação e execute as fases, preservando o projeto original.**
