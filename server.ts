@@ -8,7 +8,7 @@ import { buildAppZipArchive } from './server/zipExport.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 interface BcbSeriesResult {
   seriesId: number;
@@ -478,17 +478,31 @@ async function createAppServer() {
     }
   });
 
-  if (process.env.NODE_ENV !== 'production') {
-    const { createServer: createViteServer } = await import('vite');
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distDir = path.resolve(__dirname, 'dist');
+  const distDir = path.resolve(__dirname, 'dist');
+  const isProd = process.env.NODE_ENV === 'production';
+  let mountedVite = false;
+
+  if (!isProd) {
+    try {
+      const { createServer: createViteServer } = await import('vite');
+      const vite = await createViteServer({
+        server: { middlewareMode: true },
+        appType: 'spa',
+      });
+      app.use(vite.middlewares);
+      mountedVite = true;
+    } catch {
+      mountedVite = false;
+    }
+  }
+
+  if (!mountedVite) {
     app.use(express.static(distDir));
-    app.get('*', (_req, res) => {
+    app.get('*', (req, res) => {
+      if (req.path.startsWith('/api/')) {
+        res.status(404).json({ error: 'Endpoint de API não encontrado.' });
+        return;
+      }
       const indexFile = path.join(distDir, 'index.html');
       if (fs.existsSync(indexFile)) {
         res.sendFile(indexFile);
